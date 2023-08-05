@@ -1,0 +1,42 @@
+---
+title: "TP 1"
+author: "Luciana Casoy"
+date: "2023-08-02"
+output: html_document
+---
+
+### TP 1
+
+## IMPORTAMOS UNA BASE DE DATOS DE CASOS DE COVID Y QUEREMOS SABER CUANTOS SON LOS FALLECIDOS POR RANGOS ETAREOS
+```{r}
+casos_covid19_2020 <- read.csv("data/casos_covid19_2020.csv",
+                      stringsAsFactors = TRUE, encoding = "latin")
+```
+```{r}
+library(tidyverse)
+```
+## SELECCIONO UNICAMENTE LOS FALLECIDOS
+```{r}
+fallecidos_covid19_2020 <-dplyr::filter (casos_covid19_2020, fallecido == "si")
+```
+
+## ARMO RANGOS ETAREOS PARA ORGANIZAR LOS CASOS 
+```{r}
+fallecidos_covid19_2020_agrupados <- mutate(fallecidos_covid19_2020, grupos_edades =case_when(edad >= 0 & edad<= 5 ~ "Pirmera infancia",
+                                          edad > 5 & edad <= 14 ~ "Infantes y Adolescentes",
+                                          edad > 14 & edad <= 26 ~ "Jovenes",
+                                          edad > 26 & edad <= 65 ~ "Adultos",
+                                          edad > 65 ~ "Adultos mayores"))
+
+```
+
+
+## CUENTO LA CANTIDAD DE FALLECIDOS POR GRUPO ETAREO (saco los n/a) 
+```{r}
+conteo <- fallecidos_covid19_2020_agrupados %>% count(grupos_edades)
+
+```
+```{r}
+cant_fallecidos_por_edades <- conteo%>%filter(!is.na(grupos_edades))
+```
+
